@@ -13,16 +13,18 @@ public class Todo extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private String creator;
+
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String contents;
 
-    public Todo(String creator, String title, String contents) {
-        this.creator = creator;
-        this.title = title;
+    @Column(nullable = false)
+    private String creator;
+
+    public Todo(String contents, String title, String creator) {
         this.contents = contents;
+        this.title = title;
+        this.creator = creator;
     }
 }
