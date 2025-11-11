@@ -5,10 +5,7 @@ import com.example.scheduleappdev.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +34,18 @@ public class TodoController {
     @GetMapping("/todos")
     public ResponseEntity<List<GetTodoResponse>> getAllTodos() {
         List<GetTodoResponse> result = todoService.getAll();
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    /**
+     * 선택 일정 조회하기
+     *
+     * @param todo_id API Path로 일정 ID 선택받기
+     * @return 200 OK 상태코드와 조회된 내용 반환
+     */
+    @GetMapping("/todos/{todo_id}")
+    public ResponseEntity<GetTodoResponse> getOneTodo(@PathVariable Long todo_id) {
+        GetTodoResponse result = todoService.getOne(todo_id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

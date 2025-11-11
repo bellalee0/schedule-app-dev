@@ -44,4 +44,20 @@ public class TodoService {
                     todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
                 )).toList();
     }
+
+    /**
+     * 선택 일정 조회하기
+     *
+     * @param todo_id 일정 ID 받기
+     * @return 조회된 일정 DTO에 담아 반환
+     * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
+     */
+    @Transactional(readOnly = true)
+    public GetTodoResponse getOne(Long todo_id) {
+        Todo todo = todoRepository.findById(todo_id)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
+        return new GetTodoResponse(
+                todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
+        );
+    }
 }
