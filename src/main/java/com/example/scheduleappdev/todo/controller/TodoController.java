@@ -40,37 +40,37 @@ public class TodoController {
     /**
      * 선택 일정 조회하기
      *
-     * @param todo_id API Path로 일정 ID 선택받기
+     * @param todoId API Path로 일정 ID 선택받기
      * @return 200 OK 상태코드와 조회된 내용 반환
      */
     @GetMapping("/todos/{todo_id}")
-    public ResponseEntity<GetTodoResponse> getOneTodo(@PathVariable Long todo_id) {
-        GetTodoResponse result = todoService.getOne(todo_id);
+    public ResponseEntity<GetTodoResponse> getOneTodo(@PathVariable Long todoId) {
+        GetTodoResponse result = todoService.getOne(todoId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**
      * 선택 일정 수정하기
      *
-     * @param todo_id API Path로 일정 ID 선택받기
+     * @param todoId API Path로 일정 ID 선택받기
      * @param request HTTP Body로 내용 받기
      * @return 200 OK 상태코드와 수정된 내용 반환
      */
     @PutMapping("/todos/{todo_id}")
-    public ResponseEntity<UpdateTodoResponse> updateTodo(@PathVariable Long todo_id, @RequestBody UpdateTodoRequest request) {
-        UpdateTodoResponse result = todoService.update(todo_id, request);
+    public ResponseEntity<UpdateTodoResponse> updateTodo(@PathVariable Long todoId, @RequestBody UpdateTodoRequest request) {
+        UpdateTodoResponse result = todoService.update(todoId, request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**
      * 선택 일정 삭제하기
      *
-     * @param todo_id API Path로 일정 ID 선택받기
+     * @param todoId API Path로 일정 ID 선택받기
      * @return 204 NO_CONTENT 상태코드 반환
      */
     @DeleteMapping("/todos/{todo_id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long todo_id) {
-        todoService.delete(todo_id);
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long todoId) {
+        todoService.delete(todoId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
