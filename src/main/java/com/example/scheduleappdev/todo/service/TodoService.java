@@ -3,6 +3,8 @@ package com.example.scheduleappdev.todo.service;
 import com.example.scheduleappdev.todo.dto.*;
 import com.example.scheduleappdev.todo.entity.Todo;
 import com.example.scheduleappdev.todo.repository.TodoRepository;
+import com.example.scheduleappdev.user.entity.User;
+import com.example.scheduleappdev.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,21 +15,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TodoService {
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
     /**
      * 일정 생성하기
      *
      * @param request 내용 받기
      * @return 생성된 내용 DTO에 담아 반환
+     * @throws IllegalStateException 존재하지 않는 유저명 입력 시
      */
     @Transactional
     public CreateTodoResponse create(CreateTodoRequest request) {
+        User creator = userRepository.findByUsername(request.getCreator())
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
         Todo todo = new Todo(
-                request.getCreator(), request.getTitle(), request.getContents()
+                request.getTitle(), request.getContents(), creator
         );
         Todo savedTodo = todoRepository.save(todo);
         return new CreateTodoResponse(
-                savedTodo.getId(), savedTodo.getTitle(), savedTodo.getContents(), savedTodo.getCreator(), savedTodo.getCreatedAt(), savedTodo.getModifiedAt()
+                savedTodo.getId(), savedTodo.getTitle(), savedTodo.getContents(), savedTodo.getCreator().getUsername(), savedTodo.getCreatedAt(), savedTodo.getModifiedAt()
         );
     }
 
@@ -41,7 +47,7 @@ public class TodoService {
         List<Todo> todos = todoRepository.findAll();
         return todos.stream()
                 .map(todo -> new GetTodoResponse(
-                    todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
+                    todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
                 )).toList();
     }
 
@@ -57,7 +63,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
         return new GetTodoResponse(
-                todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
+                todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
         );
     }
 
@@ -68,15 +74,18 @@ public class TodoService {
      * @param request 수정할 내용 받기(일정 제목, 작성자명)
      * @return 수정된 내용 DTO에 담아 반환
      * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
+     * @throws IllegalStateException 존재하지 않는 유저명 입력 시
      */
     @Transactional
     public UpdateTodoResponse update(Long todoId, UpdateTodoRequest request) {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
-        todo.update(request.getTitle(), request.getCreator());
+        User creator = userRepository.findByUsername(request.getCreator())
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
+        todo.update(request.getTitle(), creator);
         todoRepository.saveAndFlush(todo);
         return new UpdateTodoResponse(
-                todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
+                todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
         );
     }
 
