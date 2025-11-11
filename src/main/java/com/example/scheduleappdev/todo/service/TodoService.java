@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TodoService {
@@ -27,5 +29,19 @@ public class TodoService {
         return new CreateTodoResponse(
                 savedTodo.getId(), savedTodo.getTitle(), savedTodo.getContents(), savedTodo.getCreator(), savedTodo.getCreatedAt(), savedTodo.getModifiedAt()
         );
+    }
+
+    /**
+     * 전체 일정 조회하기
+     *
+     * @return 저장된 일정 DTO에 담아 List로 반환
+     */
+    @Transactional(readOnly = true)
+    public List<GetTodoResponse> getAll() {
+        List<Todo> todos = todoRepository.findAll();
+        return todos.stream()
+                .map(todo -> new GetTodoResponse(
+                    todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
+                )).toList();
     }
 }
