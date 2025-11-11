@@ -61,4 +61,16 @@ public class UserController {
         UpdateUserResponse result = userService.update(userId, request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    /**
+     * 선택 유저 삭제하기
+     *
+     * @param userId API Path로 유저 ID 선택받기
+     * @return 204 NO_CONTENT 상태코드 반환
+     */
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        userService.delete(userId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

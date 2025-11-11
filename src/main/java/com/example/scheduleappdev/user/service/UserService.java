@@ -80,4 +80,17 @@ public class UserService {
                 user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
         );
     }
+
+    /**
+     * 선택 유저 삭제하기
+     *
+     * @param userId API Path로 유저 ID 선택받기
+     * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
+     */
+    @Transactional
+    public void delete(Long userId) {
+        boolean exists = userRepository.existsById(userId);
+        if (!exists) { throw new IllegalStateException("존재하지 않는 유저 ID입니다."); }
+        userRepository.deleteById(userId);
+    }
 }
