@@ -2,6 +2,7 @@ package com.example.scheduleappdev.user.controller;
 
 import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * 유저 생성하기
+     * 유저 생성하기(회원가입)
      *
      * @param request HTTP Body로 내용 받기
      * @return 201 CREATED 상태코드와 생성된 내용 반환
@@ -72,5 +73,19 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.delete(userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 로그인
+     *
+     * @param request HTTP Body로 내용 받기(이메일, 비밀번호)
+     * @param session HttpSession 주입
+     * @return 200 OK 상태코드 반환
+     */
+    @PostMapping("/login")
+    public ResponseEntity<Void> login(@RequestBody LoginRequest request, HttpSession session) {
+        UserForHttpSession user = userService.login(request);
+        session.setAttribute("user", user);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

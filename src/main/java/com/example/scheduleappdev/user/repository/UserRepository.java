@@ -13,4 +13,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return Optional<User>로 검색 결과 반환
      */
     Optional<User> findByUsername(String user);
+
+    /**
+     * 이메일로 유저 검색
+     *
+     * @param email 이메일 입력
+     * @return Optional<User>로 검색 결과 반환
+     */
+    Optional<User> findByEmail(String email);
 }
