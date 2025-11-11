@@ -48,4 +48,17 @@ public class UserController {
         GetUserResponse result = userService.getOne(userId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    /**
+     * 선택 유저 수정하기
+     *
+     * @param userId API Path로 유저 ID 선택받기
+     * @param request HTTP Body로 내용 받기
+     * @return 200 OK 상태코드와 수정된 내용 반환
+     */
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<UpdateUserResponse> updateUser(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
+        UpdateUserResponse result = userService.update(userId, request);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }

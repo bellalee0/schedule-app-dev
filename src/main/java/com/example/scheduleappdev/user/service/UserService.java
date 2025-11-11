@@ -1,8 +1,6 @@
 package com.example.scheduleappdev.user.service;
 
-import com.example.scheduleappdev.user.dto.CreateUserRequest;
-import com.example.scheduleappdev.user.dto.CreateUserResponse;
-import com.example.scheduleappdev.user.dto.GetUserResponse;
+import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.entity.User;
 import com.example.scheduleappdev.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +58,25 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 ID입니다."));
         return new GetUserResponse(
+                user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
+        );
+    }
+
+    /**
+     * 선택 유저 수정하기
+     *
+     * @param userId 유저 ID 받기
+     * @param request 수정할 내용 받기(유저명)
+     * @return 수정된 내용 DTO에 담아 반환
+     * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
+     */
+    @Transactional
+    public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저 ID입니다."));
+        user.update(request.getUsername());
+        userRepository.saveAndFlush(user);
+        return new UpdateUserResponse(
                 user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
         );
     }

@@ -25,4 +25,11 @@ public class User extends BaseEntity {
         this.username = username;
         this.email = email;
     }
+
+    /**
+     * 생성된 유저 수정용 메서드 (유저명 수정)
+     */
+    public void update(String username) {
+        this.username = username;
+    }
 }
