@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -57,6 +58,25 @@ public class TodoService {
         Todo todo = todoRepository.findById(todo_id)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
         return new GetTodoResponse(
+                todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
+        );
+    }
+
+    /**
+     * 선택 일정 수정하기
+     *
+     * @param todo_id 일정 ID 받기
+     * @param request 수정할 내용 받기(일정 제목, 작성자명)
+     * @return 수정된 내용 DTO에 담아 반환
+     * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
+     */
+    @Transactional
+    public UpdateTodoResponse update(Long todo_id, UpdateTodoRequest request) {
+        Todo todo = todoRepository.findById(todo_id)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
+        todo.update(request.getTitle(), request.getCreator());
+        todoRepository.saveAndFlush(todo);
+        return new UpdateTodoResponse(
                 todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
         );
     }

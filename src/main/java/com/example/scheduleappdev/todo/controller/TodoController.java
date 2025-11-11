@@ -48,4 +48,17 @@ public class TodoController {
         GetTodoResponse result = todoService.getOne(todo_id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    /**
+     * 선택 일정 수정하기
+     *
+     * @param todo_id API Path로 일정 ID 선택받기
+     * @param request HTTP Body로 내용 받기
+     * @return 200 OK 상태코드와 수정된 내용 반환
+     */
+    @PutMapping("/todos/{todo_id}")
+    public ResponseEntity<UpdateTodoResponse> updateTodo(@PathVariable Long todo_id, @RequestBody UpdateTodoRequest request) {
+        UpdateTodoResponse result = todoService.update(todo_id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }

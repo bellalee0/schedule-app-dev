@@ -27,4 +27,12 @@ public class Todo extends BaseEntity {
         this.title = title;
         this.creator = creator;
     }
+
+    /**
+     * 생성된 일정 수정용 메서드 (제목, 작성자명 수정)
+     */
+    public void update(String title, String creator) {
+        this.title = title;
+        this.creator = creator;
+    }
 }
