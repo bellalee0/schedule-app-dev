@@ -2,11 +2,14 @@ package com.example.scheduleappdev.user.service;
 
 import com.example.scheduleappdev.user.dto.CreateUserRequest;
 import com.example.scheduleappdev.user.dto.CreateUserResponse;
+import com.example.scheduleappdev.user.dto.GetUserResponse;
 import com.example.scheduleappdev.user.entity.User;
 import com.example.scheduleappdev.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +31,20 @@ public class UserService {
         return new CreateUserResponse(
                 savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), savedUser.getCreatedAt(), savedUser.getModifiedAt()
         );
+    }
+
+    /**
+     * 전체 유저 조회하기
+     *
+     * @return 저장된 일정 DTO에 담아 List로 반환
+     */
+    @Transactional(readOnly = true)
+    public List<GetUserResponse> getAll() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new GetUserResponse(
+                        user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
+                ))
+                .toList();
     }
 }
