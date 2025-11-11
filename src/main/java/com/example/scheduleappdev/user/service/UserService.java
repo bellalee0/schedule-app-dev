@@ -36,7 +36,7 @@ public class UserService {
     /**
      * 전체 유저 조회하기
      *
-     * @return 저장된 일정 DTO에 담아 List로 반환
+     * @return 저장된 유저 DTO에 담아 List로 반환
      */
     @Transactional(readOnly = true)
     public List<GetUserResponse> getAll() {
@@ -46,5 +46,21 @@ public class UserService {
                         user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
                 ))
                 .toList();
+    }
+
+    /**
+     * 선택 유저 조회하기
+     *
+     * @param userId 유저 ID 받기
+     * @return 조회된 유저 DTO에 담아 반환
+     * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
+     */
+    @Transactional(readOnly = true)
+    public GetUserResponse getOne(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 ID입니다."));
+        return new GetUserResponse(
+                user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
+        );
     }
 }
