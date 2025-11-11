@@ -1,5 +1,6 @@
 package com.example.scheduleappdev.todo.entity;
 
+import com.example.scheduleappdev.global.Entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.scheduleappdev.todo.entity;
+package com.example.scheduleappdev.global.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
