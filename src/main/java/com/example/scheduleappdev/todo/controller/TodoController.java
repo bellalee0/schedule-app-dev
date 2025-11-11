@@ -43,7 +43,7 @@ public class TodoController {
      * @param todoId API Path로 일정 ID 선택받기
      * @return 200 OK 상태코드와 조회된 내용 반환
      */
-    @GetMapping("/todos/{todo_id}")
+    @GetMapping("/todos/{todoId}")
     public ResponseEntity<GetTodoResponse> getOneTodo(@PathVariable Long todoId) {
         GetTodoResponse result = todoService.getOne(todoId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -56,7 +56,7 @@ public class TodoController {
      * @param request HTTP Body로 내용 받기
      * @return 200 OK 상태코드와 수정된 내용 반환
      */
-    @PutMapping("/todos/{todo_id}")
+    @PutMapping("/todos/{todoId}")
     public ResponseEntity<UpdateTodoResponse> updateTodo(@PathVariable Long todoId, @RequestBody UpdateTodoRequest request) {
         UpdateTodoResponse result = todoService.update(todoId, request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -68,7 +68,7 @@ public class TodoController {
      * @param todoId API Path로 일정 ID 선택받기
      * @return 204 NO_CONTENT 상태코드 반환
      */
-    @DeleteMapping("/todos/{todo_id}")
+    @DeleteMapping("/todos/{todoId}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Long todoId) {
         todoService.delete(todoId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
