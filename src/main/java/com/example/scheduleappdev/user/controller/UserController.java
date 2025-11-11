@@ -85,7 +85,24 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest request, HttpSession session) {
         UserForHttpSession user = userService.login(request);
-        session.setAttribute("user", user);
+        session.setAttribute("loginUser", user);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * 로그아웃
+     *
+     * @param user loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
+     * @return 204 NO_CONTENT 상태코드 반환
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @SessionAttribute(name="loginUser", required=false) UserForHttpSession user,
+            HttpSession session) {
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        session.invalidate();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
