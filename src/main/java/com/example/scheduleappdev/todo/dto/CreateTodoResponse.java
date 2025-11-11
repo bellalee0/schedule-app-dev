@@ -13,15 +13,15 @@ public class CreateTodoResponse {
     private final String title;
     private final String contents;
     private final String creator;
-    private final LocalDateTime creationAt;
+    private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public CreateTodoResponse(Long id, String title, String contents, String creator, LocalDateTime creationAt, LocalDateTime modifiedAt) {
+    public CreateTodoResponse(Long id, String title, String contents, String creator, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.title = title;
         this.contents = contents;
         this.creator = creator;
-        this.creationAt = creationAt;
+        this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
 }
