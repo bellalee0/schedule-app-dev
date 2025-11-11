@@ -80,4 +80,17 @@ public class TodoService {
                 todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator(), todo.getCreatedAt(), todo.getModifiedAt()
         );
     }
+
+    /**
+     * 선택 일정 삭제하기
+     *
+     * @param todo_id API Path로 일정 ID 선택받기
+     * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
+     */
+    @Transactional
+    public void delete(Long todo_id) {
+        boolean exists = todoRepository.existsById(todo_id);
+        if (!exists) { throw new IllegalStateException("존재하지 않는 일정 ID입니다."); }
+        todoRepository.deleteById(todo_id);
+    }
 }

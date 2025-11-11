@@ -61,4 +61,16 @@ public class TodoController {
         UpdateTodoResponse result = todoService.update(todo_id, request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    /**
+     * 선택 일정 삭제하기
+     *
+     * @param todo_id API Path로 일정 ID 선택받기
+     * @return 204 NO_CONTENT 상태코드 반환
+     */
+    @DeleteMapping("/todos/{todo_id}")
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long todo_id) {
+        todoService.delete(todo_id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
