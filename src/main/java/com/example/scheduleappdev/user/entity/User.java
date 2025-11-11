@@ -20,10 +20,13 @@ public class User extends BaseEntity {
     // TODO : email 형식 지정 (Lv.5)
     @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
+    private String password;
 
-    public User(String username, String email) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
+        this.password = password;
     }
 
     /**
