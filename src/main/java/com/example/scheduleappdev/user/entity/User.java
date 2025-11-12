@@ -32,7 +32,7 @@ public class User extends BaseEntity {
     /**
      * 생성된 유저 수정용 메서드 (유저명 수정)
      */
-    public void update(String username) {
+    public void updateUsername(String username) {
         this.username = username;
     }
 }
