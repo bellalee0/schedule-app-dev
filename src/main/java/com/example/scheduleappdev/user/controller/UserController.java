@@ -50,19 +50,19 @@ public class UserController {
     }
 
     /**
-     * 선택 유저 수정하기
+     * 선택 유저 유저명 수정하기
      *
      * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
      * @param userId API Path로 유저 ID 선택받기
      * @param request HTTP Body로 내용 받기
      * @return 200 OK 상태코드와 수정된 내용 반환 / 비로그인 혹은 id 불일치시 401 UNAUTHORIZED 상태코드 반환
      */
-    @PutMapping("/users/{userId}")
-    public ResponseEntity<UpdateUserResponse> updateUser(
+    @PutMapping("/users/{userId}/username")
+    public ResponseEntity<UpdateUserResponse> updateUsername(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
-            @PathVariable Long userId, @RequestBody UpdateUserRequest request) {
+            @PathVariable Long userId, @RequestBody UpdateUsernameRequest request) {
         if (sessionUser == null || !sessionUser.getId().equals(userId)) { return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); }
-        UpdateUserResponse result = userService.update(userId, request);
+        UpdateUserResponse result = userService.updateUsername(userId, request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

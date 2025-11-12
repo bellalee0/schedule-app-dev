@@ -63,7 +63,7 @@ public class UserService {
     }
 
     /**
-     * 선택 유저 수정하기
+     * 선택 유저 유저명 수정하기
      *
      * @param userId 유저 ID 받기
      * @param request 수정할 내용 받기(유저명)
@@ -71,10 +71,10 @@ public class UserService {
      * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
      */
     @Transactional
-    public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
+    public UpdateUserResponse updateUsername(Long userId, UpdateUsernameRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저 ID입니다."));
-        user.update(request.getUsername());
+        user.updateUsername(request.getUsername());
         userRepository.saveAndFlush(user);
         return new UpdateUserResponse(
                 user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
