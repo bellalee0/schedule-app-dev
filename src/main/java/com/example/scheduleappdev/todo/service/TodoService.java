@@ -21,9 +21,9 @@ public class TodoService {
      * 일정 생성하기
      *
      * @param request 내용 받기(일정 제목, 내용)
-     * @param userId Htto Session을 통해 유저ID 받기
+     * @param userId Http Session을 통해 유저ID 받기
      * @return 생성된 내용 DTO에 담아 반환
-     * @throws IllegalStateException 존재하지 않는 유저명 입력 시
+     * @throws IllegalStateException 존재하지 않는 유저로 접근 시
      */
     @Transactional
     public CreateTodoResponse create(CreateTodoRequest request, Long userId) {
@@ -71,17 +71,21 @@ public class TodoService {
     /**
      * 선택 일정 수정하기
      *
+     * @apiNote 1. 일정ID로 일정 찾기(없으면 예외 처리) / 2. 일정의 유저ID와 로그인된 유저의 ID 일치 여부 확인(불일치시 예외 처리) / 3. 일정 수정
      * @param todoId 일정 ID 받기
-     * @param request 수정할 내용 받기(일정 제목, 작성자명)
+     * @param request 수정할 내용 받기(일정 제목)
+     * @param userId Http Session을 통해 유저ID 받기
      * @return 수정된 내용 DTO에 담아 반환
      * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
-     * @throws IllegalStateException 존재하지 않는 유저명 입력 시
+     * @throws IllegalStateException 수정하려는 일정의 유저ID와 로그인한 유저의 ID 불일치 시
+     * @throws IllegalStateException 존재하지 않는 유저로 접근 시
      */
     @Transactional
-    public UpdateTodoResponse update(Long todoId, UpdateTodoRequest request) {
+    public UpdateTodoResponse update(Long todoId, UpdateTodoRequest request, Long userId) {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
-        User creator = userRepository.findByUsername(request.getCreator())
+        if (!todo.getCreator().getId().equals(userId)) { throw new IllegalStateException("접근 권한이 없습니다."); }
+        User creator = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
         todo.update(request.getTitle(), creator);
         todoRepository.saveAndFlush(todo);

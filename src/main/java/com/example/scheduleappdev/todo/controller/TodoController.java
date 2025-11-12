@@ -57,13 +57,17 @@ public class TodoController {
     /**
      * 선택 일정 수정하기
      *
+     * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
      * @param todoId API Path로 일정 ID 선택받기
      * @param request HTTP Body로 내용 받기
-     * @return 200 OK 상태코드와 수정된 내용 반환
+     * @return 200 OK 상태코드와 수정된 내용 반환 / 비로그인 시 401 UNAUTHORIZED 상태코드 반환
      */
     @PutMapping("/todos/{todoId}")
-    public ResponseEntity<UpdateTodoResponse> updateTodo(@PathVariable Long todoId, @RequestBody UpdateTodoRequest request) {
-        UpdateTodoResponse result = todoService.update(todoId, request);
+    public ResponseEntity<UpdateTodoResponse> updateTodo(
+            @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
+            @PathVariable Long todoId, @RequestBody UpdateTodoRequest request) {
+        if (sessionUser == null) { return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); }
+        UpdateTodoResponse result = todoService.update(todoId, request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
