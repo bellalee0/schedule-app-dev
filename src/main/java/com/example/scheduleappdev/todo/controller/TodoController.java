@@ -2,6 +2,7 @@ package com.example.scheduleappdev.todo.controller;
 
 import com.example.scheduleappdev.todo.dto.*;
 import com.example.scheduleappdev.todo.service.TodoService;
+import com.example.scheduleappdev.user.dto.UserForHttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,16 @@ public class TodoController {
     /**
      * 일정 생성하기
      *
+     * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
      * @param request HTTP Body로 내용 받기
-     * @return 201 CREATED 상태코드와 생성된 내용 반환
+     * @return 201 CREATED 상태코드와 생성된 내용 반환 / 비로그인 시 401 UNAUTHORIZED 상태코드 반환
      */
     @PostMapping("/todos")
-    public ResponseEntity<CreateTodoResponse> createTodo(@RequestBody CreateTodoRequest request) {
-        CreateTodoResponse result = todoService.create(request);
+    public ResponseEntity<CreateTodoResponse> createTodo(
+            @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
+            @RequestBody CreateTodoRequest request) {
+        if (sessionUser == null) { return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); }
+        CreateTodoResponse result = todoService.create(request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 

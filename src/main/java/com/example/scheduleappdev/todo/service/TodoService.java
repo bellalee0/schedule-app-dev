@@ -20,13 +20,14 @@ public class TodoService {
     /**
      * 일정 생성하기
      *
-     * @param request 내용 받기
+     * @param request 내용 받기(일정 제목, 내용)
+     * @param userId Htto Session을 통해 유저ID 받기
      * @return 생성된 내용 DTO에 담아 반환
      * @throws IllegalStateException 존재하지 않는 유저명 입력 시
      */
     @Transactional
-    public CreateTodoResponse create(CreateTodoRequest request) {
-        User creator = userRepository.findByUsername(request.getCreator())
+    public CreateTodoResponse create(CreateTodoRequest request, Long userId) {
+        User creator = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
         Todo todo = new Todo(
                 request.getTitle(), request.getContents(), creator
