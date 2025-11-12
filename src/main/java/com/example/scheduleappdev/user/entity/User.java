@@ -35,4 +35,11 @@ public class User extends BaseEntity {
     public void updateUsername(String username) {
         this.username = username;
     }
+
+    /**
+     * 생성된 유저 수정용 메서드 (패스워드 수정)
+     */
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

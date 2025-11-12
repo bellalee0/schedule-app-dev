@@ -82,6 +82,27 @@ public class UserService {
     }
 
     /**
+     * 선택 유저 비밀번호 수정하기
+     *
+     * @param userId 유저 ID 받기
+     * @param request 수정할 내용 받기(현재 비밀번호, 새로운 비밀번호)
+     * @return 수정한 유저 정보 DTO에 담아 반환
+     * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
+     * @throws IllegalStateException 현재 비밀번호 불일치 시
+     */
+    @Transactional
+    public UpdateUserResponse updatePassword(Long userId, UpdatePasswordRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저 ID입니다."));
+        if(!user.getPassword().equals(request.getCurrentPassword())) { throw new IllegalStateException("현재 비밀번호가 일치하지 않습니다."); }
+        user.updatePassword(request.getNewPassword());
+        userRepository.saveAndFlush(user);
+        return new UpdateUserResponse(
+                user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
+        );
+    }
+
+    /**
      * 선택 유저 삭제하기
      *
      * @param userId API Path로 유저 ID 선택받기
