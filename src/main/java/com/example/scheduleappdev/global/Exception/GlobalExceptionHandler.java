@@ -26,4 +26,20 @@ public class GlobalExceptionHandler {
         response.put("message", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * TodoServiceException을 상속받은 커스텀 예외 처리
+     *
+     * @param ex 예외 이름
+     * @return 각 예외에 설정한 message와 HTTP 상태코드 반환
+     */
+    @ExceptionHandler(TodoServiceException.class)
+    public final ResponseEntity<Map<String, Object>> handleTodoServiceException(TodoServiceException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", new Date());
+        response.put("status", ex.getStatus().value());
+        response.put("error", ex.getStatus());
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, ex.getStatus());
+    }
 }
