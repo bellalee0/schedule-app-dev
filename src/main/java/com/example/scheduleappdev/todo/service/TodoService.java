@@ -98,12 +98,15 @@ public class TodoService {
      * 선택 일정 삭제하기
      *
      * @param todoId API Path로 일정 ID 선택받기
+     * @param userId Http Session을 통해 유저ID 받기
      * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
+     * @throws IllegalStateException 삭제하려는 일정의 유저ID와 로그인한 유저의 ID 불일치 시
      */
     @Transactional
-    public void delete(Long todoId) {
-        boolean exists = todoRepository.existsById(todoId);
-        if (!exists) { throw new IllegalStateException("존재하지 않는 일정 ID입니다."); }
+    public void delete(Long todoId, Long userId) {
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
+        if (!todo.getCreator().getId().equals(userId)) { throw new IllegalStateException("접근 권한이 없습니다."); }
         todoRepository.deleteById(todoId);
     }
 }

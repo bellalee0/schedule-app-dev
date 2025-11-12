@@ -74,12 +74,16 @@ public class TodoController {
     /**
      * 선택 일정 삭제하기
      *
+     * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
      * @param todoId API Path로 일정 ID 선택받기
-     * @return 204 NO_CONTENT 상태코드 반환
+     * @return 204 NO_CONTENT 상태코드 반환 / 비로그인 시 401 UNAUTHORIZED 상태코드 반환
      */
     @DeleteMapping("/todos/{todoId}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long todoId) {
-        todoService.delete(todoId);
+    public ResponseEntity<Void> deleteTodo(
+            @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
+            @PathVariable Long todoId) {
+        if (sessionUser == null) { return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); }
+        todoService.delete(todoId, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
