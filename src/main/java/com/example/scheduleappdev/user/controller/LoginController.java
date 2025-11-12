@@ -17,18 +17,6 @@ public class LoginController {
     private final LoginService loginService;
 
     /**
-     * 회원가입(유저 생성하기)
-     *
-     * @param request HTTP Body로 내용 받기
-     * @return 201 CREATED 상태코드와 생성된 내용 반환
-     */
-    @PostMapping("/signup")
-    public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserRequest request) {
-        CreateUserResponse result = loginService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
-
-    /**
      * 로그인
      *
      * @param request HTTP Body로 내용 받기(이메일, 비밀번호)

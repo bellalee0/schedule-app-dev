@@ -15,6 +15,18 @@ public class UserController {
     private final UserService userService;
 
     /**
+     * 회원가입(유저 생성하기)
+     *
+     * @param request HTTP Body로 내용 받기
+     * @return 201 CREATED 상태코드와 생성된 내용 반환
+     */
+    @PostMapping("/signup")
+    public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserRequest request) {
+        CreateUserResponse result = userService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    /**
      * 전체 유저 조회하기
      *
      * @return 200 OK 상태코드와 조회된 내용 반환

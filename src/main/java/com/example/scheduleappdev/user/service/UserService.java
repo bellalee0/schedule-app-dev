@@ -15,6 +15,23 @@ public class UserService {
     private final UserRepository userRepository;
 
     /**
+     * 회원가입(유저 생성하기)
+     *
+     * @param request 내용 받기
+     * @return 생성된 내용 DTO에 담아 반환
+     */
+    @Transactional
+    public CreateUserResponse create(CreateUserRequest request) {
+        User user = new User(
+                request.getUsername(), request.getEmail(), request.getPassword()
+        );
+        User savedUser = userRepository.save(user);
+        return new CreateUserResponse(
+                savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), savedUser.getCreatedAt(), savedUser.getModifiedAt()
+        );
+    }
+
+    /**
      * 전체 유저 조회하기
      *
      * @return 저장된 유저 DTO에 담아 List로 반환
