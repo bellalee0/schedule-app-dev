@@ -20,13 +20,13 @@ public class LoginService {
      * @apiNote 1. 해당 이메일의 유저 찾기 / 2. 비밀번호 확인
      * @param request 내용 받기
      * @return 유저의 ID, 이메일, 유저명 DTO에 담아 전달
-     * @throws IllegalArgumentException 존재하지 않는 이메일 입력 시
-     * @throws TodoServiceException 비밀번호 불일치 시
+     * @throws TodoServiceException 존재하지 않는 이메일 입력 시 Not_Found_User 예외 발생
+     * @throws TodoServiceException 비밀번호 불일치 시 Incorrect_Password 예외 발생
      */
     @Transactional
     public UserForHttpSession login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         if (!user.getPassword().equals(request.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
         return new UserForHttpSession(
                 user.getId(), user.getEmail(), user.getUsername()

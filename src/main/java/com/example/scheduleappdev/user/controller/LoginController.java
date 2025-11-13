@@ -1,5 +1,7 @@
 package com.example.scheduleappdev.user.controller;
 
+import com.example.scheduleappdev.global.Exception.ErrorMessage;
+import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.service.LoginService;
 import jakarta.servlet.http.HttpSession;
@@ -35,14 +37,13 @@ public class LoginController {
      *
      * @param user loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
      * @return 204 NO_CONTENT 상태코드 반환
+     * @throws TodoServiceException 비로그인 상태로 접근 시 Not_Logged_In 예외 발생
      */
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
             @SessionAttribute(name="loginUser", required=false) UserForHttpSession user,
             HttpSession session) {
-        if (user == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (user == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
