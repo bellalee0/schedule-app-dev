@@ -28,18 +28,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * TodoServiceException을 상속받은 커스텀 예외 처리
+     * TodoServiceException(커스텀 예외) 처리
      *
-     * @param ex 예외 이름
-     * @return 각 예외에 설정한 message와 HTTP 상태코드 반환
+     * @param ex TodoServiceException(커스텀 예외)
+     * @return 예외의 HTTP 상태코드와 내용 DTO에 담아 반환
      */
     @ExceptionHandler(TodoServiceException.class)
-    public final ResponseEntity<Map<String, Object>> handleTodoServiceException(TodoServiceException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", new Date());
-        response.put("status", ex.getStatus().value());
-        response.put("error", ex.getStatus());
-        response.put("message", ex.getMessage());
-        return new ResponseEntity<>(response, ex.getStatus());
+    public final ResponseEntity<ErrorResponseDTO> handleTodoServiceException(TodoServiceException ex) {
+        // TODO : 로그 기록 작성 추가갈 예정
+        return ResponseEntity.status(ex.getErrorMessage().getStatus()).body(new ErrorResponseDTO(ex.getErrorMessage(), ex.getMessage()));
     }
 }
