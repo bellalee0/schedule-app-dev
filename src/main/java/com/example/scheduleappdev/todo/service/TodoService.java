@@ -1,5 +1,7 @@
 package com.example.scheduleappdev.todo.service;
 
+import com.example.scheduleappdev.global.Exception.ErrorMessage;
+import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.todo.dto.*;
 import com.example.scheduleappdev.todo.entity.Todo;
 import com.example.scheduleappdev.todo.repository.TodoRepository;
@@ -23,12 +25,12 @@ public class TodoService {
      * @param request 내용 받기(일정 제목, 내용)
      * @param userId Http Session을 통해 유저ID 받기
      * @return 생성된 내용 DTO에 담아 반환
-     * @throws IllegalStateException 존재하지 않는 유저로 접근 시
+     * @throws TodoServiceException 존재하지 않는 유저로 접근 시 Not_Found_User 예외 발생
      */
     @Transactional
     public CreateTodoResponse create(CreateTodoRequest request, Long userId) {
         User creator = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         Todo todo = new Todo(
                 request.getTitle(), request.getContents(), creator
         );
@@ -57,12 +59,12 @@ public class TodoService {
      *
      * @param todoId 일정 ID 받기
      * @return 조회된 일정 DTO에 담아 반환
-     * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
+     * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
      */
     @Transactional(readOnly = true)
     public GetTodoResponse getOne(Long todoId) {
         Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_TODO));
         return new GetTodoResponse(
                 todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
         );
@@ -76,17 +78,17 @@ public class TodoService {
      * @param request 수정할 내용 받기(일정 제목)
      * @param userId Http Session을 통해 유저ID 받기
      * @return 수정된 내용 DTO에 담아 반환
-     * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
-     * @throws IllegalStateException 수정하려는 일정의 유저ID와 로그인한 유저의 ID 불일치 시
-     * @throws IllegalStateException 존재하지 않는 유저로 접근 시
+     * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
+     * @throws TodoServiceException 로그인된 유저ID와 수정하려는 일정의 유저ID 불일치 시 Unmatched_User 예외 발생
+     * @throws TodoServiceException 존재하지 않는 유저로 접근 시 Not_Found_User 예외 발생
      */
     @Transactional
     public UpdateTodoResponse update(Long todoId, UpdateTodoRequest request, Long userId) {
         Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
-        if (!todo.getCreator().getId().equals(userId)) { throw new IllegalStateException("접근 권한이 없습니다."); }
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_TODO));
+        if (!todo.getCreator().getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
         User creator = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         todo.update(request.getTitle(), creator);
         todoRepository.saveAndFlush(todo);
         return new UpdateTodoResponse(
@@ -99,14 +101,14 @@ public class TodoService {
      *
      * @param todoId API Path로 일정 ID 선택받기
      * @param userId Http Session을 통해 유저ID 받기
-     * @throws IllegalStateException 존재하지 않는 일정 ID 입력 시
-     * @throws IllegalStateException 삭제하려는 일정의 유저ID와 로그인한 유저의 ID 불일치 시
+     * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
+     * @throws TodoServiceException 로그인된 유저ID와 삭제하려는 일정의 유저ID 불일치 시 Unmatched_User 예외 발생
      */
     @Transactional
     public void delete(Long todoId, Long userId) {
         Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 일정 ID입니다."));
-        if (!todo.getCreator().getId().equals(userId)) { throw new IllegalStateException("접근 권한이 없습니다."); }
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_TODO));
+        if (!todo.getCreator().getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
         todoRepository.deleteById(todoId);
     }
 }
