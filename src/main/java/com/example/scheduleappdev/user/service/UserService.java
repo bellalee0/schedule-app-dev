@@ -53,12 +53,12 @@ public class UserService {
      *
      * @param userId 유저 ID 받기
      * @return 조회된 유저 DTO에 담아 반환
-     * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
+     * @throws TodoServiceException 존재하지 않는 유저 ID 입력 시 Not_Found_User 예외 발생
      */
     @Transactional(readOnly = true)
     public GetUserResponse getOne(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저 ID입니다."));
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         return new GetUserResponse(
                 user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
         );
@@ -70,12 +70,12 @@ public class UserService {
      * @param userId 유저 ID 받기
      * @param request 수정할 내용 받기(유저명)
      * @return 수정된 내용 DTO에 담아 반환
-     * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
+     * @throws TodoServiceException 존재하지 않는 유저 ID 입력 시 Not_Found_User 예외 발생
      */
     @Transactional
     public UpdateUserResponse updateUsername(Long userId, UpdateUsernameRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저 ID입니다."));
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         user.updateUsername(request.getUsername());
         userRepository.saveAndFlush(user);
         return new UpdateUserResponse(
@@ -89,13 +89,13 @@ public class UserService {
      * @param userId 유저 ID 받기
      * @param request 수정할 내용 받기(현재 비밀번호, 새로운 비밀번호)
      * @return 수정한 유저 정보 DTO에 담아 반환
-     * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
-     * @throws TodoServiceException 현재 비밀번호 불일치 시
+     * @throws TodoServiceException 존재하지 않는 유저 ID 입력 시 Not_Found_User 예외 발생
+     * @throws TodoServiceException 비밀번호 불일치 시 Incorrect_Password 예외 발생
      */
     @Transactional
     public UpdateUserResponse updatePassword(Long userId, UpdatePasswordRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 유저 ID입니다."));
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         if(!user.getPassword().equals(request.getCurrentPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
         user.updatePassword(request.getNewPassword());
         userRepository.saveAndFlush(user);
@@ -108,12 +108,15 @@ public class UserService {
      * 선택 유저 삭제하기
      *
      * @param userId API Path로 유저 ID 선택받기
-     * @throws IllegalStateException 존재하지 않는 유저 ID 입력 시
+     * @throws TodoServiceException 존재하지 않는 유저 ID 입력 시 Not_Found_User 예외 발생
+     * @throws TodoServiceException 비밀번호 불일치 시 Incorrect_Password 예외 발생
      */
     @Transactional
-    public void delete(Long userId) {
-        boolean exists = userRepository.existsById(userId);
-        if (!exists) { throw new IllegalStateException("존재하지 않는 유저 ID입니다."); }
+    public void delete(Long userId, DeleteUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
+        if(!user.getPassword().equals(request.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
+        // TODO : 해당 유저ID의 일정이 있다면 유저 삭제가 안 될텐데, 이 부분의 예외 처리도 필요할까?
         userRepository.deleteById(userId);
     }
 }
