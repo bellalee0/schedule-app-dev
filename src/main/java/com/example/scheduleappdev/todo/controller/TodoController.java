@@ -5,6 +5,7 @@ import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.todo.dto.*;
 import com.example.scheduleappdev.todo.service.TodoService;
 import com.example.scheduleappdev.user.dto.UserForHttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class TodoController {
     @PostMapping("/todos")
     public ResponseEntity<CreateTodoResponse> createTodo(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
-            @RequestBody CreateTodoRequest request) {
+            @Valid @RequestBody CreateTodoRequest request) {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         CreateTodoResponse result = todoService.create(request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -69,7 +70,8 @@ public class TodoController {
     @PutMapping("/todos/{todoId}")
     public ResponseEntity<UpdateTodoResponse> updateTodo(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
-            @PathVariable Long todoId, @RequestBody UpdateTodoRequest request) {
+            @PathVariable Long todoId,
+            @Valid @RequestBody UpdateTodoRequest request) {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         UpdateTodoResponse result = todoService.update(todoId, request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(result);

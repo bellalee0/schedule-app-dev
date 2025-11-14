@@ -5,6 +5,7 @@ import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.service.LoginService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,8 @@ public class LoginController {
      * @return 200 OK 상태코드 반환
      */
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest request, HttpSession session) {
+    public ResponseEntity<Void> login(
+            @Valid @RequestBody LoginRequest request, HttpSession session) {
         UserForHttpSession user = loginService.login(request);
         session.setAttribute("loginUser", user);
         return ResponseEntity.status(HttpStatus.OK).build();

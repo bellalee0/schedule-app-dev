@@ -4,6 +4,7 @@ import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class UserController {
      * @return 201 CREATED 상태코드와 생성된 내용 반환
      */
     @PostMapping("/signup")
-    public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<CreateUserResponse> createUser( @Valid @RequestBody CreateUserRequest request) {
         CreateUserResponse result = userService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -64,7 +65,8 @@ public class UserController {
     @PutMapping("/users/{userId}/username")
     public ResponseEntity<UpdateUserResponse> updateUsername(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
-            @PathVariable Long userId, @RequestBody UpdateUsernameRequest request) {
+            @PathVariable Long userId,
+            @Valid @RequestBody UpdateUsernameRequest request) {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         if (!sessionUser.getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
         UpdateUserResponse result = userService.updateUsername(userId, request);
@@ -84,7 +86,8 @@ public class UserController {
     @PutMapping("/users/{userId}/password")
     public ResponseEntity<UpdateUserResponse> updateUserPassword(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
-            @PathVariable Long userId, @RequestBody UpdatePasswordRequest request
+            @PathVariable Long userId,
+            @Valid @RequestBody UpdatePasswordRequest request
     ) {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         if (!sessionUser.getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
@@ -99,7 +102,9 @@ public class UserController {
      * @return 204 NO_CONTENT 상태코드 반환
      */
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId, @RequestBody DeleteUserRequest request) {
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Long userId,
+            @Valid @RequestBody DeleteUserRequest request) {
         userService.delete(userId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
