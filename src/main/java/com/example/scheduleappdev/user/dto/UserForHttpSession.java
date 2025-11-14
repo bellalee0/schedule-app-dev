@@ -8,12 +8,8 @@ import lombok.Getter;
 @Getter
 public class UserForHttpSession {
     private Long id;
-    private String email;
-    private String username;
 
-    public UserForHttpSession(Long id, String email, String username) {
+    public UserForHttpSession(Long id) {
         this.id = id;
-        this.email = email;
-        this.username = username;
     }
 }

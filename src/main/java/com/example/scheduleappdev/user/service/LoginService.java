@@ -29,7 +29,7 @@ public class LoginService {
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         if (!user.getPassword().equals(request.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
         return new UserForHttpSession(
-                user.getId(), user.getEmail(), user.getUsername()
+                user.getId()
         );
     }
 }
