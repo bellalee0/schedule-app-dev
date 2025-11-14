@@ -2,6 +2,7 @@ package com.example.scheduleappdev.global.Exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,13 +19,8 @@ public class GlobalExceptionHandler {
      * @return 예외의 message와 BAD_REQUEST 상태코드 반환
      */
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<Map<String, Object>> handleException(Exception ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", new Date());
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("error", HttpStatus.BAD_REQUEST);
-        response.put("message", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    public final ResponseEntity<ErrorResponseDTO> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
     /**
@@ -37,5 +33,14 @@ public class GlobalExceptionHandler {
     public final ResponseEntity<ErrorResponseDTO> handleTodoServiceException(TodoServiceException ex) {
         // TODO : 로그 기록 작성 추가갈 예정
         return ResponseEntity.status(ex.getErrorMessage().getStatus()).body(new ErrorResponseDTO(ex.getErrorMessage(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(fieldError -> fieldError.getDefaultMessage())
+                .orElse("입력 값이 올바르지 않습니다.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, errorMessage));
     }
 }

@@ -2,6 +2,7 @@ package com.example.scheduleappdev.global.Exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,13 @@ public class ErrorResponseDTO {
         this.timestamp = LocalDateTime.now();
         this.status = errorCode.getStatus().value();
         this.code = errorCode.name();
+        this.message = message;
+    }
+
+    public ErrorResponseDTO(int status, HttpStatus code, String message) {
+        this.timestamp = LocalDateTime.now();
+        this.status = status;
+        this.code = code.name();
         this.message = message;
     }
 }
