@@ -116,7 +116,6 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         if(!user.getPassword().equals(request.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
-        // TODO : 해당 유저ID의 일정이 있다면 유저 삭제가 안 될텐데, 이 부분의 예외 처리도 필요할까?
         userRepository.deleteById(userId);
     }
 }
