@@ -6,10 +6,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     /**
@@ -35,6 +31,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getErrorMessage().getStatus()).body(new ErrorResponseDTO(ex.getErrorMessage(), ex.getMessage()));
     }
 
+    /**
+     * Validation 활용 시 발생하는 MethodArgumentNotValidException 예외 처리
+     *
+     * @param ex MethodArgumentNotValidException
+     * @return 예외의 첫번째 message와 BAD_REQUEST 상태코드 반환
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
