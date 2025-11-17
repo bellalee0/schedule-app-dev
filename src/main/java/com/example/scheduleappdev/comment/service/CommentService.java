@@ -103,4 +103,20 @@ public class CommentService {
                 comment.getTodo().getId(), comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
         );
     }
+
+    /**
+     * 선택 댓글 삭제하기
+     *
+     * @param commentId API Path로 댓글 ID 선택받기
+     * @param userId Http Session을 통해 유저ID 받기
+     * @throws TodoServiceException 존재하지 않는 댓글ID 입력 시 Not_Found_Comment 예외 발생
+     * @throws TodoServiceException 로그인된 유저ID와 삭제하려는 댓글의 유저ID 불일치 시 Unmatched_User 예외 발생
+     */
+    @Transactional
+    public void delete(Long commentId, Long userId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_COMMENT));
+        if (!comment.getCreator().getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
+        commentRepository.deleteById(commentId);
+    }
 }

@@ -78,4 +78,21 @@ public class CommentController {
         UpdateCommentResponse result = commentService.update(commentId, request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    /**
+     * 선택 댓글 삭제하기
+     *
+     * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
+     * @param commentId API Path로 댓글 ID 선택받기
+     * @return 204 NO_CONTENT 상태코드 반환
+     * @throws TodoServiceException 비로그인 상태로 접근 시 Not_Logged_In 예외 발생
+     */
+    @DeleteMapping("/todos/comments/{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
+            @PathVariable Long commentId) {
+        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
+        commentService.delete(commentId, sessionUser.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
