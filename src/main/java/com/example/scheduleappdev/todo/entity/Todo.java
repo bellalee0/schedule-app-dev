@@ -32,10 +32,9 @@ public class Todo extends BaseEntity {
     }
 
     /**
-     * 생성된 일정 수정용 메서드 (제목, 작성자명 수정)
+     * 생성된 일정 수정용 메서드 (제목 수정)
      */
-    public void update(String title, User creator) {
+    public void update(String title) {
         this.title = title;
-        this.creator = creator;
     }
 }

@@ -87,9 +87,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_TODO));
         if (!todo.getCreator().getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
-        User creator = userRepository.findById(userId)
-                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
-        todo.update(request.getTitle(), creator);
+        todo.update(request.getTitle());
         todoRepository.saveAndFlush(todo);
         return new UpdateTodoResponse(
                 todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
