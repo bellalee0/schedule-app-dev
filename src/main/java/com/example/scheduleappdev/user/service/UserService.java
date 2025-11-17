@@ -92,14 +92,14 @@ public class UserService {
      * @param request 수정할 내용 받기(현재 비밀번호, 새로운 비밀번호)
      * @return 수정한 유저 정보 DTO에 담아 반환
      * @throws TodoServiceException 존재하지 않는 유저 ID 입력 시 Not_Found_User 예외 발생
-     * @throws TodoServiceException 비밀번호 불일치 시 Incorrect_Password 예외 발생
+     * @throws TodoServiceException 현재 비밀번호 불일치 시 Incorrect_Password 예외 발생
      */
     @Transactional
     public UpdateUserResponse updatePassword(Long userId, UpdatePasswordRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
-        if(!user.getPassword().equals(request.getCurrentPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
-        user.updatePassword(request.getNewPassword());
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
+        user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.saveAndFlush(user);
         return new UpdateUserResponse(
                 user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
@@ -117,7 +117,7 @@ public class UserService {
     public void delete(Long userId, DeleteUserRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
-        if(!user.getPassword().equals(request.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
         userRepository.deleteById(userId);
     }
 }
