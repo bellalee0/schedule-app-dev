@@ -1,5 +1,6 @@
 package com.example.scheduleappdev.user.service;
 
+import com.example.scheduleappdev.config.PasswordEncoder;
 import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LoginService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 로그인
@@ -27,7 +29,7 @@ public class LoginService {
     public UserForHttpSession login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
-        if (!user.getPassword().equals(request.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
         return new UserForHttpSession(
                 user.getId()
         );
