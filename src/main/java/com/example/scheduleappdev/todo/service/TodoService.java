@@ -80,7 +80,6 @@ public class TodoService {
      * @return 수정된 내용 DTO에 담아 반환
      * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
      * @throws TodoServiceException 로그인된 유저ID와 수정하려는 일정의 유저ID 불일치 시 Unmatched_User 예외 발생
-     * @throws TodoServiceException 존재하지 않는 유저로 접근 시 Not_Found_User 예외 발생
      */
     @Transactional
     public UpdateTodoResponse update(Long todoId, UpdateTodoRequest request, Long userId) {
