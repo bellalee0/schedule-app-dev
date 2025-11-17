@@ -1,5 +1,6 @@
 package com.example.scheduleappdev.user.service;
 
+import com.example.scheduleappdev.config.PasswordEncoder;
 import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 회원가입(유저 생성하기)
@@ -25,7 +27,7 @@ public class UserService {
     @Transactional
     public CreateUserResponse create(CreateUserRequest request) {
         User user = new User(
-                request.getUsername(), request.getEmail(), request.getPassword()
+                request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword())
         );
         User savedUser = userRepository.save(user);
         return new CreateUserResponse(
