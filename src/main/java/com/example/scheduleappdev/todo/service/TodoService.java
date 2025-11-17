@@ -1,5 +1,7 @@
 package com.example.scheduleappdev.todo.service;
 
+import com.example.scheduleappdev.comment.dto.GetCommentForTodoResponse;
+import com.example.scheduleappdev.comment.repository.CommentRepository;
 import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.todo.dto.*;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -18,6 +21,7 @@ import java.util.List;
 public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     /**
      * 일정 생성하기
@@ -62,11 +66,17 @@ public class TodoService {
      * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
      */
     @Transactional(readOnly = true)
-    public GetTodoResponse getOne(Long todoId) {
+    public GetOneTodoResponse getOne(Long todoId) {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_TODO));
-        return new GetTodoResponse(
-                todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
+        List<GetCommentForTodoResponse> comments = commentRepository.findByTodoId(todoId).stream()
+                .map(comment -> new GetCommentForTodoResponse(
+                        comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
+                ))
+                .sorted(Comparator.comparing(GetCommentForTodoResponse::getModifiedAt).reversed())
+                .toList();
+        return new GetOneTodoResponse(
+                todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt(), comments
         );
     }
 

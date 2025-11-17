@@ -53,8 +53,8 @@ public class TodoController {
      * @return 200 OK 상태코드와 조회된 내용 반환
      */
     @GetMapping("/todos/{todoId}")
-    public ResponseEntity<GetTodoResponse> getOneTodo(@PathVariable Long todoId) {
-        GetTodoResponse result = todoService.getOne(todoId);
+    public ResponseEntity<GetOneTodoResponse> getOneTodo(@PathVariable Long todoId) {
+        GetOneTodoResponse result = todoService.getOne(todoId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
