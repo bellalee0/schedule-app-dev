@@ -38,7 +38,7 @@ public class CommentController {
     }
 
     /**
-     * 전체 일정 조회하기
+     * 전체 댓글 조회하기
      *
      * @return 200 OK 상태코드와 조회된 내용 반환
      */
@@ -49,7 +49,7 @@ public class CommentController {
     }
 
     /**
-     * 선택 일정 조회하기
+     * 선택 댓글 조회하기
      *
      * @param commentId API Path로 댓글 ID 선택받기
      * @return 200 OK 상태코드와 조회된 내용 반환
@@ -57,6 +57,25 @@ public class CommentController {
     @GetMapping("/todos/comments/{commentId}")
     public ResponseEntity<GetCommentResponse> getOneComment(@PathVariable Long commentId) {
         GetCommentResponse result = commentService.getOne(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    /**
+     * 선택 댓글 수정하기
+     *
+     * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
+     * @param commentId API Path로 댓글 ID 선택받기
+     * @param request HTTP Body로 내용 받기
+     * @return 200 OK 상태코드와 수정된 내용 반환
+     * @throws TodoServiceException 비로그인 상태로 접근 시 Not_Logged_In 예외 발생
+     */
+    @PutMapping("/todos/comments/{commentId}")
+    public ResponseEntity<UpdateCommentResponse> updateComment(
+            @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
+            @PathVariable Long commentId,
+            @Valid @RequestBody UpdateCommentRequest request) {
+        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
+        UpdateCommentResponse result = commentService.update(commentId, request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

@@ -32,4 +32,12 @@ public class Comment extends BaseEntity {
         this.creator = user;
         this.todo = todo;
     }
+
+    /**
+     * 생성된 댓글 수정용 메서드 (댓글 수정)
+     * @param comment
+     */
+    public void update(String comment) {
+        this.comment = comment;
+    }
 }
