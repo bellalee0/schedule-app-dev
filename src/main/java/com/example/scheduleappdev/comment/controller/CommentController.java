@@ -47,4 +47,16 @@ public class CommentController {
         List<GetCommentResponse> result = commentService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    /**
+     * 선택 일정 조회하기
+     *
+     * @param commentId API Path로 댓글 ID 선택받기
+     * @return 200 OK 상태코드와 조회된 내용 반환
+     */
+    @GetMapping("/todos/comments/{commentId}")
+    public ResponseEntity<GetCommentResponse> getOneComment(@PathVariable Long commentId) {
+        GetCommentResponse result = commentService.getOne(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }

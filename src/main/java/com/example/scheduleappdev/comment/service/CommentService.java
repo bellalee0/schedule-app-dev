@@ -64,4 +64,20 @@ public class CommentService {
                         .thenComparing(GetCommentResponse::getModifiedAt, Comparator.reverseOrder()))
                 .toList();
     }
+
+    /**
+     * 선택 댓글 조회하기
+     *
+     * @param commentId 댓글 ID 받기
+     * @return 조회된 댓글 DTO에 담아 반환
+     * @throws TodoServiceException 존재하지 않는 댓글ID 입력 시 Not_Found_Comment 예외 발생
+     */
+    @Transactional(readOnly = true)
+    public GetCommentResponse getOne(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_COMMENT));
+        return new GetCommentResponse(
+                comment.getTodo().getId(), comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
+        );
+    }
 }
