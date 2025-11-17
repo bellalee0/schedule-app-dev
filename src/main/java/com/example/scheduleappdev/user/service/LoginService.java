@@ -1,6 +1,6 @@
 package com.example.scheduleappdev.user.service;
 
-import com.example.scheduleappdev.config.PasswordEncoder;
+import com.example.scheduleappdev.global.config.PasswordEncoder;
 import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
