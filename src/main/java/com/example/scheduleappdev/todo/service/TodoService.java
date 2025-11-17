@@ -116,6 +116,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_TODO));
         if (!todo.getCreator().getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
+        commentRepository.deleteByTodoId(todoId);
         todoRepository.deleteById(todoId);
     }
 }

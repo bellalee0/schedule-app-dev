@@ -11,4 +11,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
      * 일정 ID 기준으로 댓글 조회
      */
     List<Comment> findByTodoId(Long todoId);
+
+    /**
+     * 일정 ID 기준으로 댓글 삭제
+     */
+    void deleteByTodoId(Long todoId);
 }
