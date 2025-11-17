@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
@@ -33,5 +35,16 @@ public class CommentController {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         CreateCommentResponse result = commentService.create(todoId, request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    /**
+     * 전체 일정 조회하기
+     *
+     * @return 200 OK 상태코드와 조회된 내용 반환
+     */
+    @GetMapping("/todos/comments")
+    public ResponseEntity<List<GetCommentResponse>> getAllComments() {
+        List<GetCommentResponse> result = commentService.getAll();
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

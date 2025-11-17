@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -43,5 +46,22 @@ public class CommentService {
         return new CreateCommentResponse(
                 savedComment.getTodo().getId(), savedComment.getId(), savedComment.getComment(), savedComment.getCreator().getUsername(), savedComment.getCreatedAt(), savedComment.getModifiedAt()
         );
+    }
+
+    /**
+     * 전체 댓글 조회하기
+     *
+     * @return 저장된 댓글 DTO에 담아 List로 반환
+     */
+    @Transactional(readOnly = true)
+    public List<GetCommentResponse> getAll() {
+        List<Comment> comments = commentRepository.findAll();
+        return comments.stream()
+                .map(comment -> new GetCommentResponse(
+                        comment.getTodo().getId(), comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
+                ))
+                .sorted(Comparator.comparing(GetCommentResponse::getTodoId)
+                        .thenComparing(GetCommentResponse::getModifiedAt, Comparator.reverseOrder()))
+                .toList();
     }
 }
