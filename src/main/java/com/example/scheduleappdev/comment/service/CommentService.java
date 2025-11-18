@@ -58,8 +58,7 @@ public class CommentService {
      */
     @Transactional(readOnly = true)
     public Page<GetCommentResponse> getAll(int page, int size) {
-        // TODO : 페이징을 사용한다면 굳이 일정별로 그룹화할 필요가 있을까?
-        Pageable pageable = PageRequest.of(page, size, Sort.by("todoId").ascending().and(Sort.by("modifiedAt").descending()));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedAt").descending());
         Page<Comment> comments = commentRepository.findAll(pageable);
         return comments.map(comment -> new GetCommentResponse(
                         comment.getTodo().getId(), comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
