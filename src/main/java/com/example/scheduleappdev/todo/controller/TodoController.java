@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class TodoController {
@@ -38,6 +36,7 @@ public class TodoController {
 
     /**
      * 전체 일정 조회하기
+     *
      * @param page 쿼리 파라미터로 페이지 번호 받기
      * @param size 쿼리 파라미터로 페이지 당 항목 수 받기
      * @return 200 OK 상태코드와 조회된 내용 반환

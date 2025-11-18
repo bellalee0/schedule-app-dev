@@ -31,7 +31,7 @@ public class TodoService {
      * 일정 생성하기
      *
      * @param request 내용 받기(일정 제목, 내용)
-     * @param userId Http Session을 통해 유저ID 받기
+     * @param userId Http Session을 통해 로그인된 유저ID 받기
      * @return 생성된 내용 DTO에 담아 반환
      * @throws TodoServiceException 존재하지 않는 유저로 접근 시 Not_Found_User 예외 발생
      */
@@ -53,7 +53,7 @@ public class TodoService {
      *
      * @param page 페이지 번호 받기
      * @param size 페이지 당 항목 수 받기
-     * @return 저장된 일정 DTO에 담아 List로 반환
+     * @return 저장된 일정 DTO에 담고, Page 객체에 담아 반환
      */
     @Transactional(readOnly = true)
     public Page<GetTodoResponse> getAll(int page, int size) {
@@ -75,6 +75,7 @@ public class TodoService {
     public GetOneTodoResponse getOne(Long todoId) {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_TODO));
+        // TODO : 여기에도 페이징 적용 해야할까?
         List<GetCommentForTodoResponse> comments = commentRepository.findByTodoId(todoId).stream()
                 .map(comment -> new GetCommentForTodoResponse(
                         comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
@@ -89,10 +90,10 @@ public class TodoService {
     /**
      * 선택 일정 수정하기
      *
-     * @apiNote 1. 일정ID로 일정 찾기(없으면 예외 처리) / 2. 일정의 유저ID와 로그인된 유저의 ID 일치 여부 확인(불일치시 예외 처리) / 3. 일정 수정
+     * @apiNote 1. 일정ID로 일정 찾기(없으면 예외 처리) / 2. 일정의 유저 ID와 로그인된 유저의 ID 일치 여부 확인(불일치시 예외 처리) / 3. 일정 수정
      * @param todoId 일정 ID 받기
      * @param request 수정할 내용 받기(일정 제목)
-     * @param userId Http Session을 통해 유저ID 받기
+     * @param userId Http Session을 통해 로그인된 유저ID 받기
      * @return 수정된 내용 DTO에 담아 반환
      * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
      * @throws TodoServiceException 로그인된 유저ID와 수정하려는 일정의 유저ID 불일치 시 Unmatched_User 예외 발생
@@ -113,9 +114,9 @@ public class TodoService {
      * 선택 일정 삭제하기
      *
      * @param todoId API Path로 일정 ID 선택받기
-     * @param userId Http Session을 통해 유저ID 받기
+     * @param userId Http Session을 통해 로그인된 유저ID 받기
      * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
-     * @throws TodoServiceException 로그인된 유저ID와 삭제하려는 일정의 유저ID 불일치 시 Unmatched_User 예외 발생
+     * @throws TodoServiceException 로그인된 유저 ID와 삭제하려는 일정의 유저 ID 불일치 시 Unmatched_User 예외 발생
      */
     @Transactional
     public void delete(Long todoId, Long userId) {
