@@ -7,6 +7,7 @@ import com.example.scheduleappdev.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +34,15 @@ public class UserController {
     /**
      * 전체 유저 조회하기
      *
+     * @param page 쿼리 파라미터로 페이지 번호 받기
+     * @param size 쿼리 파라미터로 페이지 당 항목 수 받기
      * @return 200 OK 상태코드와 조회된 내용 반환
      */
     @GetMapping("/users")
-    public ResponseEntity<List<GetUserResponse>> getAllUsers() {
-        List<GetUserResponse> result = userService.getAll();
+    public ResponseEntity<Page<GetUserResponse>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<GetUserResponse> result = userService.getAll(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

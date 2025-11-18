@@ -11,6 +11,10 @@ import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.entity.User;
 import com.example.scheduleappdev.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,16 +49,17 @@ public class UserService {
     /**
      * 전체 유저 조회하기
      *
+     * @param page 페이지 번호 받기
+     * @param size 페이지 당 항목 수 받기
      * @return 저장된 유저 DTO에 담아 List로 반환
      */
     @Transactional(readOnly = true)
-    public List<GetUserResponse> getAll() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(user -> new GetUserResponse(
+    public Page<GetUserResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedAt").descending());
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(user -> new GetUserResponse(
                         user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
-                ))
-                .toList();
+                ));
     }
 
     /**
