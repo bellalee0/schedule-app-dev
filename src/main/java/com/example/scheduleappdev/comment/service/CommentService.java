@@ -9,7 +9,12 @@ import com.example.scheduleappdev.todo.entity.Todo;
 import com.example.scheduleappdev.todo.repository.TodoRepository;
 import com.example.scheduleappdev.user.entity.User;
 import com.example.scheduleappdev.user.repository.UserRepository;
+import jakarta.persistence.criteria.Order;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,18 +56,17 @@ public class CommentService {
     /**
      * 전체 댓글 조회하기
      *
+     * @param page 페이지 번호 받기
+     * @param size 페이지 당 항목 수 받기
      * @return 저장된 댓글 DTO에 담아 List로 반환
      */
     @Transactional(readOnly = true)
-    public List<GetCommentResponse> getAll() {
-        List<Comment> comments = commentRepository.findAll();
-        return comments.stream()
-                .map(comment -> new GetCommentResponse(
+    public Page<GetCommentResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("todoId").ascending().and(Sort.by("modifiedAt").descending()));
+        Page<Comment> comments = commentRepository.findAll(pageable);
+        return comments.map(comment -> new GetCommentResponse(
                         comment.getTodo().getId(), comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
-                ))
-                .sorted(Comparator.comparing(GetCommentResponse::getTodoId)
-                        .thenComparing(GetCommentResponse::getModifiedAt, Comparator.reverseOrder()))
-                .toList();
+                ));
     }
 
     /**
