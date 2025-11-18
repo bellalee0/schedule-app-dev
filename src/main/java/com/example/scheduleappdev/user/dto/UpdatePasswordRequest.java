@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 /**
- * 유저 수정 요청 DTO (패스워드)
+ * 유저 수정 요청 DTO (현재 비밀번호, 새로운 비밀번호)
  */
 @Getter
 public class UpdatePasswordRequest {

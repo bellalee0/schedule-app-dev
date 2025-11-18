@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -74,6 +72,7 @@ public class UserController {
             @PathVariable Long userId,
             @Valid @RequestBody UpdateUsernameRequest request) {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
+        // TODO : API Path로 유저ID 입력받지 말고, 처음부터 세션정보에서 ID 가져오도록 하면 어떨까??
         if (!sessionUser.getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
         UpdateUserResponse result = userService.updateUsername(userId, request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -96,6 +95,7 @@ public class UserController {
             @Valid @RequestBody UpdatePasswordRequest request
     ) {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
+        // TODO : 세션정보에서 ID 가져오기 22
         if (!sessionUser.getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
         UpdateUserResponse result = userService.updatePassword(userId, request);
         return ResponseEntity.status(HttpStatus.OK).body(result);

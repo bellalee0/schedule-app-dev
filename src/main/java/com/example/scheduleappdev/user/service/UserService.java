@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -51,7 +50,7 @@ public class UserService {
      *
      * @param page 페이지 번호 받기
      * @param size 페이지 당 항목 수 받기
-     * @return 저장된 유저 DTO에 담아 List로 반환
+     * @return 저장된 유저 DTO에 담고, Page 객체에 담아 반환
      */
     @Transactional(readOnly = true)
     public Page<GetUserResponse> getAll(int page, int size) {
@@ -134,7 +133,7 @@ public class UserService {
      * 선택 유저 삭제하기
      *
      * @param userId API Path로 유저 ID 선택받기
-     * @param request 수정할 내용 받기(현재 비밀번호, 새로운 비밀번호)
+     * @param request 수정할 내용 받기(비밀번호)
      * @throws TodoServiceException 존재하지 않는 유저 ID 입력 시 Not_Found_User 예외 발생
      * @throws TodoServiceException 비밀번호 불일치 시 Incorrect_Password 예외 발생
      */

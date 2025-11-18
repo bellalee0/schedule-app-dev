@@ -3,7 +3,7 @@ package com.example.scheduleappdev.user.dto;
 import lombok.Getter;
 
 /**
- * 세션 저장 DTO (유저ID, 이메일, 유저명)
+ * 세션 저장 DTO (유저ID)
  */
 @Getter
 public class UserForHttpSession {
