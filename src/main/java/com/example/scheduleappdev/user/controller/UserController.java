@@ -60,21 +60,16 @@ public class UserController {
      * 선택 유저 유저명 수정하기
      *
      * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
-     * @param userId API Path로 유저 ID 선택받기
      * @param request HTTP Body로 내용 받기
      * @return 200 OK 상태코드와 수정된 내용 반환
      * @throws TodoServiceException 비로그인 상태로 접근 시 Not_Logged_In 예외 발생
-     * @throws TodoServiceException 로그인된 유저ID와 수정하려는 유저ID 불일치 시 Unmatched_User 예외 발생
      */
-    @PutMapping("/users/{userId}/username")
+    @PutMapping("/users/username")
     public ResponseEntity<UpdateUserResponse> updateUsername(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
-            @PathVariable Long userId,
             @Valid @RequestBody UpdateUsernameRequest request) {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
-        // TODO : API Path로 유저ID 입력받지 말고, 처음부터 세션정보에서 ID 가져오도록 하면 어떨까??
-        if (!sessionUser.getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
-        UpdateUserResponse result = userService.updateUsername(userId, request);
+        UpdateUserResponse result = userService.updateUsername(sessionUser.getId(), request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -82,22 +77,17 @@ public class UserController {
      * 선택 유저 비밀번호 수정하기
      *
      * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
-     * @param userId API Path로 유저 ID 선택받기
      * @param request HTTP Body로 내용 받기
      * @return 200 OK 상태코드와 수정된 내용 반환
      * @throws TodoServiceException 비로그인 상태로 접근 시 Not_Logged_In 예외 발생
-     * @throws TodoServiceException 로그인된 유저ID와 수정하려는 유저ID 불일치 시 Unmatched_User 예외 발생
      */
-    @PutMapping("/users/{userId}/password")
+    @PutMapping("/users/password")
     public ResponseEntity<UpdateUserResponse> updateUserPassword(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
-            @PathVariable Long userId,
             @Valid @RequestBody UpdatePasswordRequest request
     ) {
         if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
-        // TODO : 세션정보에서 ID 가져오기 22
-        if (!sessionUser.getId().equals(userId)) { throw new TodoServiceException(ErrorMessage.UNMATCHED_USER); }
-        UpdateUserResponse result = userService.updatePassword(userId, request);
+        UpdateUserResponse result = userService.updatePassword(sessionUser.getId(), request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
