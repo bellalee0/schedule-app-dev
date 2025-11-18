@@ -70,7 +70,7 @@ public class UserService {
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         List<GetTodoResponse> todos = todoRepository.findByCreator(user).stream()
                 .map(todo -> new GetTodoResponse(
-                        todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
+                        todo.getId(), todo.getTitle(), todo.getContents(), commentRepository.countByTodoId(todo.getId()), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
                 ))
                 .sorted(Comparator.comparing(GetTodoResponse::getModifiedAt))
                 .toList();
