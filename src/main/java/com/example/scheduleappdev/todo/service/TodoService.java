@@ -10,6 +10,10 @@ import com.example.scheduleappdev.todo.repository.TodoRepository;
 import com.example.scheduleappdev.user.entity.User;
 import com.example.scheduleappdev.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,15 +51,17 @@ public class TodoService {
     /**
      * 전체 일정 조회하기
      *
+     * @param page 페이지 번호 받기
+     * @param size 페이지 당 항목 수 받기
      * @return 저장된 일정 DTO에 담아 List로 반환
      */
     @Transactional(readOnly = true)
-    public List<GetTodoResponse> getAll() {
-        List<Todo> todos = todoRepository.findAll();
-        return todos.stream()
-                .map(todo -> new GetTodoResponse(
-                    todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
-                )).toList();
+    public Page<GetTodoResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedAt").descending());
+        Page<Todo> todos = todoRepository.findAll(pageable);
+        return todos.map(todo -> new GetTodoResponse(
+                    todo.getId(), todo.getTitle(), todo.getContents(), commentRepository.countByTodoId(todo.getId()), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
+                ));
     }
 
     /**

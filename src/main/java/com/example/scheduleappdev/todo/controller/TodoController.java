@@ -7,6 +7,7 @@ import com.example.scheduleappdev.todo.service.TodoService;
 import com.example.scheduleappdev.user.dto.UserForHttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,12 +38,15 @@ public class TodoController {
 
     /**
      * 전체 일정 조회하기
-     *
+     * @param page 쿼리 파라미터로 페이지 번호 받기
+     * @param size 쿼리 파라미터로 페이지 당 항목 수 받기
      * @return 200 OK 상태코드와 조회된 내용 반환
      */
     @GetMapping("/todos")
-    public ResponseEntity<List<GetTodoResponse>> getAllTodos() {
-        List<GetTodoResponse> result = todoService.getAll();
+    public ResponseEntity<Page<GetTodoResponse>> getAllTodos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<GetTodoResponse> result = todoService.getAll(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
