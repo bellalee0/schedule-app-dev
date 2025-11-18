@@ -1,6 +1,5 @@
 package com.example.scheduleappdev.todo.repository;
 
-import com.example.scheduleappdev.todo.dto.GetTodoResponse;
 import com.example.scheduleappdev.todo.entity.Todo;
 import com.example.scheduleappdev.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

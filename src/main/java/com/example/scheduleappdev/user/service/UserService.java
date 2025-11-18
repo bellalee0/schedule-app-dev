@@ -1,6 +1,5 @@
 package com.example.scheduleappdev.user.service;
 
-import com.example.scheduleappdev.comment.dto.GetCommentForTodoResponse;
 import com.example.scheduleappdev.comment.dto.GetCommentResponse;
 import com.example.scheduleappdev.comment.repository.CommentRepository;
 import com.example.scheduleappdev.global.config.PasswordEncoder;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 

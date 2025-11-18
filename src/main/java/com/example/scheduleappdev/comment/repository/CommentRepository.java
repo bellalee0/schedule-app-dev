@@ -1,6 +1,5 @@
 package com.example.scheduleappdev.comment.repository;
 
-import com.example.scheduleappdev.comment.dto.GetCommentResponse;
 import com.example.scheduleappdev.comment.entity.Comment;
 import com.example.scheduleappdev.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
