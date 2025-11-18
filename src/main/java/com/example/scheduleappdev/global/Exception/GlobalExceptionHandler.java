@@ -1,11 +1,13 @@
 package com.example.scheduleappdev.global.Exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     /**
@@ -16,6 +18,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorResponseDTO> handleException(Exception ex) {
+        log.error("예외 발생: " + ex + " - " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
@@ -27,7 +30,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(TodoServiceException.class)
     public final ResponseEntity<ErrorResponseDTO> handleTodoServiceException(TodoServiceException ex) {
-        // TODO : 로그 기록 작성 추가갈 예정
+        log.error("TodoService 커스텀 예외 발생: " + ex.getErrorMessage().name() + " - " + ex.getMessage());
         return ResponseEntity.status(ex.getErrorMessage().getStatus()).body(new ErrorResponseDTO(ex.getErrorMessage(), ex.getMessage()));
     }
 
@@ -43,6 +46,7 @@ public class GlobalExceptionHandler {
                 .findFirst()
                 .map(fieldError -> fieldError.getDefaultMessage())
                 .orElse("입력 값이 올바르지 않습니다.");
+        log.error("Validation 예외 발생: " + errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, errorMessage));
     }
 }
