@@ -18,7 +18,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     /**
      * user 기준으로 일정 조회
      */
-    List<Todo> findByCreator(User user);
+    Page<Todo> findByCreator(User user, Pageable pageable);
 
     /**
      * user 기준으로 일정 삭제

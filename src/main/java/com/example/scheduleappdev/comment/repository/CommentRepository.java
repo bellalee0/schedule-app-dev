@@ -28,7 +28,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     /**
      * user 기준으로 댓글 조회
      */
-    List<Comment> findByCreator(User user);
+    Page<Comment> findByCreator(User user, Pageable pageable);
 
     /**
      * user 기준으로 댓글 삭제

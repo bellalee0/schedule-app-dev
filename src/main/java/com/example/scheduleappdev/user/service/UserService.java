@@ -73,19 +73,18 @@ public class UserService {
     public GetOneUserResponse getOne(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
-        List<GetTodoResponse> todos = todoRepository.findByCreator(user).stream()
+        Pageable todoPageable = PageRequest.of(0, 5, Sort.by("modifiedAt").descending());
+        List<GetTodoResponse> todos = todoRepository.findByCreator(user, todoPageable)
                 .map(todo -> new GetTodoResponse(
                         todo.getId(), todo.getTitle(), todo.getContents(), commentRepository.countByTodoId(todo.getId()), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
                 ))
-                .sorted(Comparator.comparing(GetTodoResponse::getModifiedAt))
-                .toList();
-        List<GetCommentResponse> comments = commentRepository.findByCreator(user).stream()
+                .getContent();
+        Pageable commentPageable = PageRequest.of(0, 5, Sort.by("modifiedAt").ascending());
+        List<GetCommentResponse> comments = commentRepository.findByCreator(user, commentPageable)
                 .map(comment -> new GetCommentResponse(
                         comment.getTodo().getId(), comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
                 ))
-                .sorted(Comparator.comparing(GetCommentResponse::getTodoId)
-                        .thenComparing(GetCommentResponse::getModifiedAt, Comparator.reverseOrder()))
-                .toList();
+                .getContent();
         return new GetOneUserResponse(
                 user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt(), todos, comments
         );
