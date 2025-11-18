@@ -1,8 +1,13 @@
 package com.example.scheduleappdev.user.service;
 
+import com.example.scheduleappdev.comment.dto.GetCommentForTodoResponse;
+import com.example.scheduleappdev.comment.dto.GetCommentResponse;
+import com.example.scheduleappdev.comment.repository.CommentRepository;
 import com.example.scheduleappdev.global.config.PasswordEncoder;
 import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
+import com.example.scheduleappdev.todo.dto.GetTodoResponse;
+import com.example.scheduleappdev.todo.repository.TodoRepository;
 import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.entity.User;
 import com.example.scheduleappdev.user.repository.UserRepository;
@@ -10,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -17,6 +24,8 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CommentRepository commentRepository;
+    private final TodoRepository todoRepository;
 
     /**
      * 회원가입(유저 생성하기)
@@ -58,11 +67,24 @@ public class UserService {
      * @throws TodoServiceException 존재하지 않는 유저 ID 입력 시 Not_Found_User 예외 발생
      */
     @Transactional(readOnly = true)
-    public GetUserResponse getOne(Long userId) {
+    public GetOneUserResponse getOne(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
-        return new GetUserResponse(
-                user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt()
+        List<GetTodoResponse> todos = todoRepository.findByCreator(user).stream()
+                .map(todo -> new GetTodoResponse(
+                        todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
+                ))
+                .sorted(Comparator.comparing(GetTodoResponse::getModifiedAt))
+                .toList();
+        List<GetCommentResponse> comments = commentRepository.findByCreator(user).stream()
+                .map(comment -> new GetCommentResponse(
+                        comment.getTodo().getId(), comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
+                ))
+                .sorted(Comparator.comparing(GetCommentResponse::getTodoId)
+                        .thenComparing(GetCommentResponse::getModifiedAt, Comparator.reverseOrder()))
+                .toList();
+        return new GetOneUserResponse(
+                user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt(), todos, comments
         );
     }
 

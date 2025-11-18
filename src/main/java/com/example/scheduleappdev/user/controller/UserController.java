@@ -47,8 +47,8 @@ public class UserController {
      * @return 200 OK 상태코드와 조회된 내용 반환
      */
     @GetMapping("/users/{userId}")
-    public ResponseEntity<GetUserResponse> getOneUser(@PathVariable Long userId) {
-        GetUserResponse result = userService.getOne(userId);
+    public ResponseEntity<GetOneUserResponse> getOneUser(@PathVariable Long userId) {
+        GetOneUserResponse result = userService.getOne(userId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
