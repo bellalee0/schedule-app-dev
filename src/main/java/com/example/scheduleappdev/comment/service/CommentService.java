@@ -9,7 +9,6 @@ import com.example.scheduleappdev.todo.entity.Todo;
 import com.example.scheduleappdev.todo.repository.TodoRepository;
 import com.example.scheduleappdev.user.entity.User;
 import com.example.scheduleappdev.user.repository.UserRepository;
-import jakarta.persistence.criteria.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,9 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Comparator;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +29,7 @@ public class CommentService {
      *
      * @param todoId 일정 ID 받기
      * @param request 내용 받기(댓글)
-     * @param userId Http Session을 통해 유저ID 받기
+     * @param userId Http Session을 통해 로그인된 유저ID 받기
      * @return 생성된 내용 DTO에 담아 반환
      * @throws TodoServiceException 존재하지 않는 유저로 접근 시 Not_Found_User 예외 발생
      * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
@@ -58,10 +54,11 @@ public class CommentService {
      *
      * @param page 페이지 번호 받기
      * @param size 페이지 당 항목 수 받기
-     * @return 저장된 댓글 DTO에 담아 List로 반환
+     * @return 저장된 댓글 DTO에 담고, Page 객체에 담아 반환
      */
     @Transactional(readOnly = true)
     public Page<GetCommentResponse> getAll(int page, int size) {
+        // TODO : 페이징을 사용한다면 굳이 일정별로 그룹화할 필요가 있을까?
         Pageable pageable = PageRequest.of(page, size, Sort.by("todoId").ascending().and(Sort.by("modifiedAt").descending()));
         Page<Comment> comments = commentRepository.findAll(pageable);
         return comments.map(comment -> new GetCommentResponse(
@@ -88,10 +85,10 @@ public class CommentService {
     /**
      * 선택 댓글 수정하기
      *
-     * @apiNote 1. 댓글ID로 일정 찾기(없으면 예외 처리) / 2. 일정의 유저ID와 로그인된 유저의 ID 일치 여부 확인(불일치시 예외 처리) / 3. 댓글 수정
+     * @apiNote 1. 댓글ID로 일정 찾기(없으면 예외 처리) / 2. 일정의 유저 ID와 로그인된 유저의 ID 일치 여부 확인(불일치시 예외 처리) / 3. 댓글 수정
      * @param commentId 일정 ID 받기
      * @param request 수정할 내용 받기(댓글)
-     * @param userId Http Session을 통해 유저ID 받기
+     * @param userId Http Session을 통해 로그인된 유저ID 받기
      * @return 수정된 내용 DTO에 담아 반환
      * @throws TodoServiceException 존재하지 않는 댓글ID 입력 시 Not_Found_Comment 예외 발생
      * @throws TodoServiceException 로그인된 유저ID와 수정하려는 일정의 유저ID 불일치 시 Unmatched_User 예외 발생
@@ -112,7 +109,7 @@ public class CommentService {
      * 선택 댓글 삭제하기
      *
      * @param commentId API Path로 댓글 ID 선택받기
-     * @param userId Http Session을 통해 유저ID 받기
+     * @param userId Http Session을 통해 로그인된 유저ID 받기
      * @throws TodoServiceException 존재하지 않는 댓글ID 입력 시 Not_Found_Comment 예외 발생
      * @throws TodoServiceException 로그인된 유저ID와 삭제하려는 댓글의 유저ID 불일치 시 Unmatched_User 예외 발생
      */

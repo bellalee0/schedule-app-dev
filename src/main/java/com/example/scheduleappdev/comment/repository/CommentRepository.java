@@ -26,6 +26,11 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     void deleteByTodoId(Long todoId);
 
     /**
+     * 일정 ID 기준으로 댓글 수 count
+     */
+    int countByTodoId(Long todoId);
+
+    /**
      * user 기준으로 댓글 조회
      */
     Page<Comment> findByCreator(User user, Pageable pageable);
@@ -34,9 +39,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
      * user 기준으로 댓글 삭제
      */
     void deleteByCreator(User user);
-
-    /**
-     * 일정 ID 기준으로 댓글 수 count
-     */
-    int countByTodoId(Long todoId);
 }

@@ -35,7 +35,7 @@ public class Comment extends BaseEntity {
 
     /**
      * 생성된 댓글 수정용 메서드 (댓글 수정)
-     * @param comment
+     * @param comment 수정할 댓글 내용
      */
     public void update(String comment) {
         this.comment = comment;
