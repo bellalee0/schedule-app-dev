@@ -132,6 +132,7 @@ public class UserService {
      * 선택 유저 삭제하기
      *
      * @param userId API Path로 유저 ID 선택받기
+     * @param request 수정할 내용 받기(현재 비밀번호, 새로운 비밀번호)
      * @throws TodoServiceException 존재하지 않는 유저 ID 입력 시 Not_Found_User 예외 발생
      * @throws TodoServiceException 비밀번호 불일치 시 Incorrect_Password 예외 발생
      */
@@ -140,6 +141,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) { throw new TodoServiceException(ErrorMessage.INCORRECT_PASSWORD); }
+        commentRepository.deleteByCreator(user);
+        todoRepository.deleteByCreator(user);
         userRepository.deleteById(userId);
     }
 }

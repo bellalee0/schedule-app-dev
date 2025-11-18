@@ -22,4 +22,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
      * user 기준으로 댓글 조회
      */
     List<Comment> findByCreator(User user);
+
+    /**
+     * user 기준으로 댓글 삭제
+     */
+    void deleteByCreator(User user);
 }

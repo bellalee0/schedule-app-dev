@@ -4,6 +4,7 @@ import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -98,14 +99,19 @@ public class UserController {
     /**
      * 선택 유저 삭제하기
      *
+     * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
      * @param userId API Path로 유저 ID 선택받기
+     * @param request HTTP Body로 내용 받기
      * @return 204 NO_CONTENT 상태코드 반환
      */
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<Void> deleteUser(
+            @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
+            HttpSession session,
             @PathVariable Long userId,
             @Valid @RequestBody DeleteUserRequest request) {
         userService.delete(userId, request);
+        if (userId.equals(sessionUser.getId())) { session.invalidate(); }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
