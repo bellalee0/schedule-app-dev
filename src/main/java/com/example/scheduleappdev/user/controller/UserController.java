@@ -110,8 +110,8 @@ public class UserController {
             HttpSession session,
             @PathVariable Long userId,
             @Valid @RequestBody DeleteUserRequest request) {
-        userService.delete(userId, request);
         if (userId.equals(sessionUser.getId())) { session.invalidate(); }
+        userService.delete(userId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
