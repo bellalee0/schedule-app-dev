@@ -31,3 +31,5 @@ Lv 8. 일정 페이징 조회
 [API 명세서](https://road-cartoon-1a1.notion.site/API-2a41d6e7a68c817a8c1bdfebe99273e1?source=copy_link)
 
 ## ERD
+
+<img width="1014" height="370" alt="Image" src="https://github.com/user-attachments/assets/6efc8851-c4f3-4f04-8764-797a8d4cfe30" />
