@@ -78,7 +78,7 @@ public class UserService {
                         todo.getId(), todo.getTitle(), todo.getContents(), commentRepository.countByTodoId(todo.getId()), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt()
                 ))
                 .getContent();
-        Pageable commentPageable = PageRequest.of(0, 5, Sort.by("modifiedAt").ascending());
+        Pageable commentPageable = PageRequest.of(0, 5, Sort.by("modifiedAt").descending());
         List<GetCommentResponse> comments = commentRepository.findByCreator(user, commentPageable)
                 .map(comment -> new GetCommentResponse(
                         comment.getTodo().getId(), comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
