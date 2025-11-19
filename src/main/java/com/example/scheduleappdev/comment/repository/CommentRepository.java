@@ -6,8 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     /**
@@ -16,9 +14,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAll(Pageable pageable);
 
     /**
-     * 일정 ID 기준으로 댓글 조회
+     * 페이징 적용하여 일정 ID 기준으로 댓글 조회
      */
-    List<Comment> findByTodoId(Long todoId);
+    Page<Comment> findByTodoId(Long todoId, Pageable pageable);
 
     /**
      * 일정 ID 기준으로 댓글 삭제

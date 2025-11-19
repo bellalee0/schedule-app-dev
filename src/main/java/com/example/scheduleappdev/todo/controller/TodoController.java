@@ -53,11 +53,16 @@ public class TodoController {
      * 선택 일정 조회하기
      *
      * @param todoId API Path로 일정 ID 선택받기
+     * @param page 쿼리 파라미터로 페이지 번호 받기
+     * @param size 쿼리 파라미터로 페이지 당 항목 수 받기
      * @return 200 OK 상태코드와 조회된 내용 반환
      */
     @GetMapping("/todos/{todoId}")
-    public ResponseEntity<GetOneTodoResponse> getOneTodo(@PathVariable Long todoId) {
-        GetOneTodoResponse result = todoService.getOne(todoId);
+    public ResponseEntity<GetOneTodoResponse> getOneTodo(
+            @PathVariable Long todoId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        GetOneTodoResponse result = todoService.getOne(todoId, page, size);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

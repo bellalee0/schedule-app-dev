@@ -17,9 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class TodoService {
@@ -68,20 +65,20 @@ public class TodoService {
      * 선택 일정 조회하기
      *
      * @param todoId 일정 ID 받기
+     * @param page 페이지 번호 받기
+     * @param size 페이지 당 항목 수 받기
      * @return 조회된 일정 DTO에 담아 반환
      * @throws TodoServiceException 존재하지 않는 일정ID 입력 시 Not_Found_Todo 예외 발생
      */
     @Transactional(readOnly = true)
-    public GetOneTodoResponse getOne(Long todoId) {
+    public GetOneTodoResponse getOne(Long todoId, int page, int size) {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_TODO));
-        // TODO : 여기에도 페이징 적용 해야할까?
-        List<GetCommentForTodoResponse> comments = commentRepository.findByTodoId(todoId).stream()
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedAt").descending());
+        Page<GetCommentForTodoResponse> comments = commentRepository.findByTodoId(todoId, pageable)
                 .map(comment -> new GetCommentForTodoResponse(
                         comment.getId(), comment.getComment(), comment.getCreator().getUsername(), comment.getCreatedAt(), comment.getModifiedAt()
-                ))
-                .sorted(Comparator.comparing(GetCommentForTodoResponse::getModifiedAt).reversed())
-                .toList();
+                ));
         return new GetOneTodoResponse(
                 todo.getId(), todo.getTitle(), todo.getContents(), todo.getCreator().getUsername(), todo.getCreatedAt(), todo.getModifiedAt(), comments
         );
