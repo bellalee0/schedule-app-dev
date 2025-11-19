@@ -105,7 +105,7 @@ public class UserController {
             HttpSession session,
             @PathVariable Long userId,
             @Valid @RequestBody DeleteUserRequest request) {
-        if (userId.equals(sessionUser.getId())) { session.invalidate(); }
+        if (sessionUser != null && userId.equals(sessionUser.getId())) { session.invalidate(); }
         userService.delete(userId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
