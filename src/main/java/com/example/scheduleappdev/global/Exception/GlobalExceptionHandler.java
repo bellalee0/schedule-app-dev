@@ -1,6 +1,7 @@
 package com.example.scheduleappdev.global.Exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -48,5 +49,17 @@ public class GlobalExceptionHandler {
                 .orElse("입력 값이 올바르지 않습니다.");
         log.error("Validation 예외 발생: " + errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, errorMessage));
+    }
+
+    /**
+     * 데이터 무결성 제약 조건을 위반했을 때 발생하는 DataIntegrityViolationException 예외 처리
+     *
+     * @param ex DataIntegrityViolationException
+     * @return 클라이언트 안내를 위한 문구와 BAD_REQUEST 상태코드 반환(세부 사항은 로그로 기록)
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        log.error("예외 발생: " + ex + " - " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, "이미 존재하는 유저입니다."));
     }
 }
