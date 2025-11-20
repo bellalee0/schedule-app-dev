@@ -4,7 +4,6 @@ import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
@@ -33,8 +32,6 @@ public class LoginCheckFilter implements Filter {
         }
 
         chain.doFilter(request, response);
-
-        // TODO : 로그인된 유저가 삭제되면 로그인이 풀려야 함
     }
 
     /**
