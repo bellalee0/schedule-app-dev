@@ -20,6 +20,11 @@ public class LoginCheckFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest)request;
         String requestURI = httpRequest.getRequestURI();
 
+        if ("GET".equalsIgnoreCase(httpRequest.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         if(isLoginCheckPath(requestURI)) {
             HttpSession session = httpRequest.getSession(false);
             if(session == null) {
