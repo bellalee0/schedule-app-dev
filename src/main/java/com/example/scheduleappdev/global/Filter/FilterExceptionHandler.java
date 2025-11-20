@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Component
-@Order(2)
+@Order(1)
 public class FilterExceptionHandler extends GenericFilterBean {
 
     @Override
