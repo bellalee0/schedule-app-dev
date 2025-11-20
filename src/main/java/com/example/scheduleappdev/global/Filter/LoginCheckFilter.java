@@ -26,7 +26,7 @@ public class LoginCheckFilter implements Filter {
 
         if(isLoginCheckPath(requestURI)) {
             HttpSession session = httpRequest.getSession(false);
-            if(session == null) {
+            if(session == null || session.getAttribute("loginUser") == null) {
                 throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN);
             }
         }
