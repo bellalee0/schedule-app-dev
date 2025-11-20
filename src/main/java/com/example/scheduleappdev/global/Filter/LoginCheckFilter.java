@@ -5,12 +5,14 @@ import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 
 import java.io.IOException;
 
 @Component
+@Order(1)
 public class LoginCheckFilter implements Filter {
     private static final String[] whitelist = {"/signup", "/login"};
 
