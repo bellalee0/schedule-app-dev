@@ -25,7 +25,7 @@ public class LoginService {
      * @throws TodoServiceException 존재하지 않는 이메일 입력 시 Not_Found_User 예외 발생
      * @throws TodoServiceException 비밀번호 불일치 시 Incorrect_Password 예외 발생
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public UserForHttpSession login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new TodoServiceException(ErrorMessage.NOT_FOUND_USER));
