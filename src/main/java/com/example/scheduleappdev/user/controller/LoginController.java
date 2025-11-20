@@ -1,6 +1,5 @@
 package com.example.scheduleappdev.user.controller;
 
-import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.service.LoginService;
@@ -45,7 +44,6 @@ public class LoginController {
     public ResponseEntity<Void> logout(
             @SessionAttribute(name="loginUser", required=false) UserForHttpSession user,
             HttpSession session) {
-        if (user == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

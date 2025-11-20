@@ -1,10 +1,8 @@
 package com.example.scheduleappdev.user.controller;
 
-import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.*;
 import com.example.scheduleappdev.user.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -68,7 +66,6 @@ public class UserController {
     public ResponseEntity<UpdateUserResponse> updateUsername(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
             @Valid @RequestBody UpdateUsernameRequest request) {
-        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         UpdateUserResponse result = userService.updateUsername(sessionUser.getId(), request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -86,7 +83,6 @@ public class UserController {
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
             @Valid @RequestBody UpdatePasswordRequest request
     ) {
-        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         UpdateUserResponse result = userService.updatePassword(sessionUser.getId(), request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -94,18 +90,14 @@ public class UserController {
     /**
      * 선택 유저 삭제하기
      *
-     * @param sessionUser loginUser 이름을 가진 세션 속성 찾아 DTO에 주입
      * @param userId API Path로 유저 ID 선택받기
      * @param request HTTP Body로 내용 받기
      * @return 204 NO_CONTENT 상태코드 반환
      */
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<Void> deleteUser(
-            @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
-            HttpSession session,
             @PathVariable Long userId,
             @Valid @RequestBody DeleteUserRequest request) {
-        if (sessionUser != null && userId.equals(sessionUser.getId())) { session.invalidate(); }
         userService.delete(userId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

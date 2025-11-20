@@ -2,7 +2,6 @@ package com.example.scheduleappdev.comment.controller;
 
 import com.example.scheduleappdev.comment.dto.*;
 import com.example.scheduleappdev.comment.service.CommentService;
-import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.user.dto.UserForHttpSession;
 import jakarta.validation.Valid;
@@ -31,7 +30,6 @@ public class CommentController {
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
             @PathVariable Long todoId,
             @Valid @RequestBody CreateCommentRequest request) {
-        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         CreateCommentResponse result = commentService.create(todoId, request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -77,7 +75,6 @@ public class CommentController {
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
             @PathVariable Long commentId,
             @Valid @RequestBody UpdateCommentRequest request) {
-        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         UpdateCommentResponse result = commentService.update(commentId, request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -94,7 +91,6 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
             @PathVariable Long commentId) {
-        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         commentService.delete(commentId, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

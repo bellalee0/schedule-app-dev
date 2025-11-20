@@ -1,6 +1,5 @@
 package com.example.scheduleappdev.todo.controller;
 
-import com.example.scheduleappdev.global.Exception.ErrorMessage;
 import com.example.scheduleappdev.global.Exception.TodoServiceException;
 import com.example.scheduleappdev.todo.dto.*;
 import com.example.scheduleappdev.todo.service.TodoService;
@@ -29,7 +28,6 @@ public class TodoController {
     public ResponseEntity<CreateTodoResponse> createTodo(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
             @Valid @RequestBody CreateTodoRequest request) {
-        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         CreateTodoResponse result = todoService.create(request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -80,7 +78,6 @@ public class TodoController {
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
             @PathVariable Long todoId,
             @Valid @RequestBody UpdateTodoRequest request) {
-        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         UpdateTodoResponse result = todoService.update(todoId, request, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -97,7 +94,6 @@ public class TodoController {
     public ResponseEntity<Void> deleteTodo(
             @SessionAttribute(name = "loginUser", required = false) UserForHttpSession sessionUser,
             @PathVariable Long todoId) {
-        if (sessionUser == null) { throw new TodoServiceException(ErrorMessage.NOT_LOGGED_IN); }
         todoService.delete(todoId, sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
